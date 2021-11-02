@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import CustomAlert from 'components/customAlert';
+import Admin from './pages/admin';
+import Home from './pages/home';
+import Page404 from 'pages/404';
+
+const App = () => (
+  <BrowserRouter>
+    <CustomAlert />
+    <Switch>
+      <Route component={Home} path='/' exact />
+      <Route component={Admin} path='/admin' />
+      <Route component={Page404} />
+    </Switch>
+  </BrowserRouter>
+);
 
 export default App;
+
+/*
+paginas:
+buscar
+categorias
+editar y borrar
+categorias:
+Agregar categorías
+Editar categorías
+Eliminar o deshabilitar 
+Ver lista de categorías
+Buscar categorías
+
+*/

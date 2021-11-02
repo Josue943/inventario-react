@@ -1,0 +1,23 @@
+.navbar-home-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  p {
+    font-size: 1.7rem;
+  }
+  .navbar-home-rigth {
+    display: flex;
+  }
+  .navbar-item {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    padding: 8px;
+    svg {
+      margin-right: 8px;
+      height: 2rem !important;
+      width: 2rem !important;
+    }
+  }
+}

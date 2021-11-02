@@ -1,0 +1,39 @@
+.new-product {
+  form {
+    padding: 15px 30px;
+    background: #fff;
+  }
+
+  .form-inputs {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    grid-gap: 0 20px;
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+    .MuiButton-root {
+      font-size: 1.4rem !important;
+    }
+    .save-button {
+      margin-left: 10px;
+    }
+  }
+
+  .form-selects {
+    display: flex;
+    gap: 30px;
+  }
+  .expiration-container {
+    display: flex;
+    align-items: flex-start;
+
+    div {
+      flex: 1;
+    }
+  }
+}
