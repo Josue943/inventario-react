@@ -1,4 +1,5 @@
 import moment from 'moment';
+import * as yup from 'yup';
 
 export const optionsMain = [
   { name: 'barCode', label: 'Codigo de barras' },
@@ -52,7 +53,30 @@ export const options = [
   { name: 'minStock', label: 'Stock mínimo', type: 'number' },
 ];
 
-export const defaultState = {
+export const defaultSelectOption = { label: 'Selecciona una opción', value: '' };
+
+export const radioOptions = [
+  { label: 'No vence', value: 0 },
+  { label: 'Si vence', value: 1 },
+];
+
+export const schema = yup.object({
+  barCode: yup.string().trim().required('El Codigo de barras es obligatorio'),
+  name: yup.string().trim().required('El nombre es obligatorio'),
+  stock: yup.number().typeError('El stock solo debe incluir numeros').min(0, 'El stock no puede ser menor a 0'),
+  minStock: yup
+    .number()
+    .min(0, 'El stock minimo no puede ser menor a 0')
+    .typeError('El stock minimo solo debe incluir numeros'),
+  price: yup.number().min(0, 'El precio no puede ser menor a 0').typeError('El precio solo debe incluir numeros'),
+  discount: yup
+    .number()
+    .min(0, 'El descuento no puede ser menor a 0')
+    .typeError('El descuento solo debe incluir numeros'),
+  presentation: yup.string().required('La presentacion es obligatoria'),
+});
+
+export const defaultValues = {
   barCode: '',
   name: '',
   minStock: 0,
@@ -63,15 +87,8 @@ export const defaultState = {
   enabled: 1,
   presentation: '',
   warranty: '',
-  expiration: moment(),
+  expiration: new Date(),
   supplierId: '',
   categoryId: '',
   hasExpiration: 0,
 };
-
-export const defaultSelectOption = { label: 'Selecciona una opción', value: '' };
-
-export const radioOptions = [
-  { label: 'No vence', value: 0 },
-  { label: 'Si vence', value: 1 },
-];

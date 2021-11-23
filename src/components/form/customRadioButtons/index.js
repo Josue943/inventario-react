@@ -1,13 +1,23 @@
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import './styles.scss';
 
-const CustomRadioButtons = ({ onChange, name, options = [], value }) => (
-  <RadioGroup className='radio-group' onChange={onChange} aria-label='gender' value={value} name={name}>
-    {options.map(({ label, value }) => (
-      <FormControlLabel key={value} value={value} control={<Radio />} label={label} className='radio-item' />
-    ))}
-  </RadioGroup>
-);
+const CustomRadioButtons = ({ name, options = [] }) => {
+  const { control } = useFormContext();
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <RadioGroup className='radio-group' aria-label='gender' {...field}>
+          {options.map(({ label, value }) => (
+            <FormControlLabel key={value} value={value} control={<Radio />} label={label} className='radio-item' />
+          ))}
+        </RadioGroup>
+      )}
+    />
+  );
+};
 
 export default CustomRadioButtons;

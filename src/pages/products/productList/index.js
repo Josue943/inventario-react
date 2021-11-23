@@ -1,27 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useLocation } from 'react-router';
+
 import './styles.scss';
-import CustomPagination from 'components/customPagination';
-import ProductItem from '../productItem';
-import useCustomParams from 'hooks/useCustomParams';
+import ProductsContainer from '../productsContainer';
+import usePagination from 'hooks/usePagination';
 import useFetch from 'hooks/useFetch';
 import { getProducts } from 'api/products';
-import { useLocation } from 'react-router';
 
 const ProductList = () => {
   const { defaultState, title } = mode[useLocation().pathname.split('/').at(-1)];
 
-  const { changeParam, params } = useCustomParams(defaultState);
-  const { data } = useFetch(getProducts, params);
-
-  const handlePage = (_, page) => changeParam('page', page - 1);
+  const { handlePage, pagination } = usePagination();
+  const { data, loading, refetch, done } = useFetch({
+    apiFun: getProducts,
+    params: { ...pagination, ...defaultState },
+  });
 
   return (
     <>
       <h3>{title}</h3>
-      {data.rows.map(row => (
-        <ProductItem key={row.id} {...row} />
-      ))}
-      <CustomPagination pages={data.pages} onChangePage={handlePage} />
+      <ProductsContainer
+        products={data.rows}
+        pages={data.pages}
+        handlePage={handlePage}
+        loading={loading}
+        currentPage={pagination.page}
+        refetch={refetch}
+        done={done}
+      />
     </>
   );
 };

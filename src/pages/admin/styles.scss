@@ -1,0 +1,45 @@
+$blue: #1976d2;
+$gray: #455a64;
+
+.dashboard-options {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(3, 200px);
+  grid-gap: 10px 15px;
+  justify-content: center;
+}
+
+.dashboard-item {
+  border: 1px solid #d8d8d8;
+  width: 200px;
+  border-radius: 5px;
+  &:hover {
+    border-color: $blue;
+    .dashboard-item-name {
+      background: $blue;
+      color: #fff;
+    }
+    .dashboard-item-icon {
+      color: $blue !important;
+    }
+  }
+  &-name {
+    border-bottom: 1px solid #d8d8d8;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding: 8px 0;
+    text-align: center;
+    color: $gray;
+  }
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0;
+  }
+  &-icon {
+    width: 100px !important;
+    height: 100px !important;
+    color: $gray !important;
+  }
+}

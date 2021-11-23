@@ -1,115 +1,106 @@
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Button } from '@mui/material';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import './styles.scss';
 import useFetch from 'hooks/useFetch';
-import { defaultState, defaultSelectOption, options, optionsMain, radioOptions } from './options';
-import { CustomInput, CustomSelect, CustomRadioButtons, CustomDatePicker } from 'components/form';
-import { createProduct } from 'api/products';
+import { defaultValues, defaultSelectOption, options, optionsMain, radioOptions, schema } from './options';
+import { CustomForm, CustomInput, CustomSelect, CustomRadioButtons, CustomDatePicker } from 'components/form';
+import { createProduct, updateProduct } from 'api/products';
 import { getCategories } from 'api/categories';
 import { getSuppliers } from 'api/suppliers';
 import { useDispatch } from 'react-redux';
 import { setAlert } from 'store/alertSlice';
+import { useForm } from 'react-hook-form';
 
-const NewProduct = () => {
-  const [state, setState] = useState(defaultState);
-  const { data: categoriesData } = useFetch(getCategories);
-  const { data: suppliersData } = useFetch(getSuppliers);
-
-  const onChange = ({ target }) => setState({ ...state, [target.name]: target.value });
-  const handleDate = value => setState({ ...state, expiration: value });
+const NewProduct = ({ item, callback }) => {
+  const categories = useFetch({ apiFun: getCategories });
+  const suppliers = useFetch({ apiFun: getSuppliers });
 
   const dispatch = useDispatch();
 
-  const onClear = () => setState(defaultState);
-
-  const categories = useMemo(
-    () => [defaultSelectOption, ...categoriesData.rows.map(({ name, id }) => ({ label: name, value: id }))],
-    [categoriesData.rows]
+  const categoriesOptions = useMemo(
+    () => [defaultSelectOption, ...categories.data.rows.map(({ name, id }) => ({ label: name, value: id }))],
+    [categories.data.rows]
   );
 
-  const suppliers = useMemo(
-    () => [defaultSelectOption, ...suppliersData.rows.map(({ details: { name }, id }) => ({ label: name, value: id }))],
-    [suppliersData.rows]
+  const suppliersOptions = useMemo(
+    () => [
+      defaultSelectOption,
+      ...suppliers.data.rows.map(({ details: { name }, id }) => ({ label: name, value: id })),
+    ],
+    [suppliers.data.rows]
   );
 
-  const onSubmit = async () => {
-    const response = await createProduct({
-      ...state,
-      enabled: state.enabled === 1,
-      categoryId: checkEmptyValues(state.categoryId),
-      discount: +state.discount,
-      expiration: state.hasExpiration ? moment(state.expiration).format('DD/MM/yyyy') : null,
-      minStock: +state.minStock,
-      supplierId: checkEmptyValues(state.supplierId),
-      price: +state.price,
-      stock: +state.stock,
+  const onSubmit = async data => {
+    const request = item ? updateProduct : createProduct;
+
+    const response = await request({
+      ...data,
+      brand: checkEmptyValues(data.brand),
+      enabled: data.enabled === 1,
+      expiration: data.hasExpiration ? moment(data.expiration).format('DD/MM/yyyy') : null,
+      supplierId: checkEmptyValues(data.supplierId),
+      categoryId: checkEmptyValues(data.categoryId),
     });
 
-    const message = response.ok ? 'Producto Creado' : 'Error de Servidor';
+    const message = response.ok ? `Producto ${item ? 'actualizado' : 'creado'}` : 'Error de Servidor';
     const severity = response.ok ? 'success' : 'error';
     dispatch(setAlert({ alert: { message, severity } }));
-    if (response.ok) onClear();
+    if (callback) callback();
+    else if (response.ok) onClear();
   };
 
+  const methods = useForm({
+    defaultValues: item ? getInitialState(item) : defaultValues,
+    resolver: yupResolver(schema),
+    mode: 'onTouched',
+  });
+
+  const watchHasExpiration = methods.watch('hasExpiration');
+
+  const onClear = () => {
+    console.log(item ? getInitialState(item) : defaultValues, '<zzzz');
+    methods.reset(item ? getInitialState(item) : defaultValues);
+  };
   return (
     <div className='new-product'>
-      <h3>Nuevo Producto</h3>
-      <form>
+      <h3>{`${item ? 'Editar' : 'Nuevo'} Producto`}</h3>
+      <CustomForm methods={methods} onSubmit={onSubmit}>
         {optionsMain.map(option => (
-          <CustomInput {...option} key={option.name} value={state[option.name]} onChange={onChange} />
+          <CustomInput {...option} key={option.name} />
         ))}
-
         <div className='form-inputs'>
           {options.map(({ select, ...rest }) => {
             const Component = select ? CustomSelect : CustomInput;
-            return <Component {...rest} key={rest.name} value={state[rest.name]} onChange={onChange} />;
+            return <Component {...rest} key={rest.name} />;
           })}
         </div>
-
         <h4>Vencimiento del producto</h4>
         <div className='expiration-container'>
-          <CustomRadioButtons
-            onChange={onChange}
-            name='hasExpiration'
-            value={state.hasExpiration}
-            options={radioOptions}
-          />
-          <CustomDatePicker
-            value={state.expiration}
-            label='Fecha Vencimiento'
-            onChange={handleDate}
-            disabled={!state.hasExpiration}
-          />
+          <CustomRadioButtons name='hasExpiration' options={radioOptions} />
+          <div className='expiration-date'>
+            <CustomDatePicker name='expiration' label='Fecha Vencimiento' disabled={+watchHasExpiration === 0} />
+          </div>
         </div>
 
-        <div className='form-selects'>
-          <CustomSelect
-            name='categoryId'
-            onChange={onChange}
-            value={state.categoryId}
-            label='Categoria'
-            options={categories}
-          />
-          <CustomSelect
-            name='supplierId'
-            onChange={onChange}
-            value={state.supplierId}
-            label='Proveedor'
-            options={suppliers}
-          />
-        </div>
+        {categories.done && suppliers.done && (
+          <div className='form-selects'>
+            <CustomSelect name='categoryId' label='Categoria' options={categoriesOptions} />
+            <CustomSelect name='supplierId' label='Proveedor' options={suppliersOptions} />
+          </div>
+        )}
 
         <div className='form-buttons'>
-          <Button color='secondary' onClick={onClear}>
+          <Button color='secondary' type='button' onClick={onClear}>
             Limpiar
           </Button>
-          <Button variant='contained' className='save-button' onClick={onSubmit}>
+          <Button variant='contained' className='save-button' type='submit'>
             Guardar
           </Button>
         </div>
-      </form>
+      </CustomForm>
     </div>
   );
 };
@@ -117,3 +108,17 @@ const NewProduct = () => {
 export default NewProduct;
 
 const checkEmptyValues = value => (value ? value : null);
+
+const changeNullValues = value => (value === null ? '' : value);
+
+const getInitialState = item => ({
+  ...item,
+  brand: changeNullValues(item.brand),
+  categoryId: changeNullValues(item.categoryId),
+  presentation: changeNullValues(item.presentation),
+  supplierId: changeNullValues(item.supplierId),
+  warranty: changeNullValues(item.warranty),
+  hasExpiration: item.expiration ? 1 : 0,
+  enabled: item.enabled ? 1 : 0,
+  expiration: item.expiration ? moment(item.expiration, 'DD/MM/yyyy') : moment(),
+});

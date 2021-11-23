@@ -25,3 +25,18 @@
 .css-bkrceb-MuiButtonBase-root-MuiPickersDay-root {
   font-size: 1rem !important;
 }
+
+.date-picker-container {
+  .MuiFormControl-root {
+    width: 99%;
+  }
+  .MuiInput-root {
+    font-size: 1.4rem;
+  }
+  .MuiInputLabel-root {
+    font-size: 1.4rem;
+  }
+  /*   .css-1480iag-MuiInputBase-root-MuiInput-root.Mui-error:after {
+    border-bottom-color: #949494;
+  } */
+}

@@ -1,0 +1,13 @@
+.sales-page {
+  form {
+    background: none;
+    padding: 0 5px;
+  }
+}
+
+.sales-range {
+  display: grid;
+  grid-template-columns: repeat(2, 300px);
+  grid-gap: 0 30px;
+  margin-bottom: 30px;
+}

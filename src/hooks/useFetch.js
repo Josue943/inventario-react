@@ -1,29 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-const defaultParams = {};
+const data = { count: 0, rows: [], pages: 0 };
 
-const useFetch = (apiFun, params = defaultParams) => {
-  const [data, setData] = useState({ count: 0, rows: [], pages: 0 });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+const useFetch = ({ apiFun, params = {}, initialFetch = true }) => {
+  const [state, setState] = useState({ data, loading: false, done: false, error: false });
+
+  const firstRender = useRef(initialFetch);
 
   const request = async () => {
-    setLoading(true);
+    !state.data.count && setState({ ...state, loading: true });
     const response = await apiFun(params);
-    setLoading(false);
-    if (response.ok) setData(response.data);
-    else console.log(response);
+    setTimeout(() => {
+      if (response.ok) setState({ data: response.data, loading: false, done: true, error: false });
+      else console.log(response);
+    }, 1000);
   };
 
   useEffect(() => {
-    request();
+    if (firstRender.current) request();
+    firstRender.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
+  }, [JSON.stringify(params)]);
 
   return {
-    data,
-    error,
-    loading,
+    ...state,
+    refetch: request,
   };
 };
 
