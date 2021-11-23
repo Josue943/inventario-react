@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { AppBar, Tab, Tabs } from '@mui/material';
 
 import './styles.scss';
 import SearchBox from 'components/searchBox';
@@ -21,6 +20,12 @@ const Home = () => {
     params: {},
   });
 
+  const handleChange = value => {
+    console.log(value);
+  };
+
+  console.log(categories);
+
   return (
     <>
       <Navbar />
@@ -28,20 +33,13 @@ const Home = () => {
         <div className='home-header'>
           <SearchBox />
         </div>
-        <AppBar position='static'>
-          <Tabs
-            value={category}
-            onChange={setCategory}
-            indicatorColor='secondary'
-            textColor='inherit'
-            variant='fullWidth'
-            aria-label='full width tabs example'
-          >
-            <Tab label='Item One' />
-            <Tab label='Item Two' />
-            <Tab label='Item Three' />
-          </Tabs>
-        </AppBar>
+        <div className='categories-tabs'>
+          {categories.rows.map(item => (
+            <div className='category-tab' key={item.id}>
+              <p>{item.name}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
