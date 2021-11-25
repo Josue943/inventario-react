@@ -10,7 +10,7 @@ const CategoriesRow = ({ categories = [], onChange, selectedCategory }) => (
         <h6
           className={`pointer ${selectedCategory === category.id ? 'selected-category' : ''}`}
           key={category.id}
-          onClick={() => onChange(category)}
+          onClick={() => onChange(category.id)}
         >
           {category.name}
         </h6>

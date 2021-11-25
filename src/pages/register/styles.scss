@@ -1,0 +1,22 @@
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  background: #f1f1f1;
+
+  &-form {
+    width: 350px;
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: #fff;
+    button {
+      margin-top: 10px;
+      width: 100%;
+    }
+    h6 {
+      margin-bottom: 10px;
+    }
+  }
+}

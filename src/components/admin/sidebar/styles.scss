@@ -55,6 +55,8 @@
 
 .sidebar-menu {
   padding: 15px 0;
+  height: calc(100vh - 220px);
+  overflow-y: auto;
 }
 
 .sidebar-item {

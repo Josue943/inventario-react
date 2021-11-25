@@ -5,8 +5,10 @@ import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
 import './styles.scss';
+import AddressForm from 'components/addressForm';
 import compareObject from 'utils/compareObjects';
 import PeopleForm from 'components/peopleForm';
+import changeNullValues from 'utils/changeNullValues';
 import { CustomForm, CustomSelect } from 'components/form';
 import { createPerson, updatePerson } from 'api/people';
 import { createSupplier, updateSupplier } from 'api/suppliers';
@@ -15,7 +17,16 @@ import { setAlert } from 'store/alertSlice';
 const NewSupplier = ({ callback, item }) => {
   const dispatch = useDispatch();
 
-  const defaultValues = item ? { enabled: item.enabled ? 1 : 0, ...item.details } : defaultState;
+  const defaultValues = item
+    ? {
+        enabled: item.enabled ? 1 : 0,
+        ...item.details,
+        province: changeNullValues(item.details.province),
+        canton: changeNullValues(item.details.canton),
+        district: changeNullValues(item.details.district),
+        address: changeNullValues(item.details.address),
+      }
+    : defaultState;
 
   const methods = useForm({ defaultValues, mode: 'onTouched', resolver: yupResolver(schema) });
 
@@ -30,19 +41,16 @@ const NewSupplier = ({ callback, item }) => {
       ...(item && { id: item.id }),
     });
 
-    const message = response ? `Proveedor ${item ? 'editado' : 'creado'}` : 'Error de servidor';
-    const severity = response ? 'success' : 'error';
-
-    dispatch(setAlert({ alert: { message, severity } }));
-    response && callback ? callback() : onClear();
+    if (response) {
+      dispatch(setAlert({ alert: { message: `Proveedor ${item ? 'editado' : 'creado'}`, severity: 'success' } }));
+      callback ? callback() : onClear();
+    }
   };
 
   const handlePersonAction = async body => {
-    if (item && compareObject(body, item.details)) return item.details.id;
     const request = item ? updatePerson : createPerson;
     const response = await request(body);
     if (response.ok) return item ? item.details.id : response.data.id;
-    dispatch(setAlert({ alert: { message: 'Error de servidor', severity: 'error' } }));
     return false;
   };
 
@@ -60,6 +68,7 @@ const NewSupplier = ({ callback, item }) => {
       <h3>{`${item ? 'Editar' : 'Nuevo'} Proveedor`}</h3>
       <CustomForm methods={methods} onSubmit={onSubmit}>
         <PeopleForm />
+        <AddressForm />
         <h5>Datos Proveedor</h5>
         <CustomSelect name='enabled' label='Estado' options={enableOptions} />
         <div className='form-buttons'>
@@ -85,6 +94,10 @@ const defaultState = {
   phone: '',
   email: '',
   enabled: 1,
+  province: '',
+  canton: '',
+  district: '',
+  address: '',
 };
 
 const enableOptions = [
@@ -103,6 +116,10 @@ const schema = yup.object({
   surnames: yup.string().trim().required('Los Apellidos son obligatorio'),
   phone: yup.string().trim().required('El Telefono es obligatorio'),
   email: yup.string().trim().email('Email invalido').required('El Email es obligatorio'),
+  province: yup.string().required('La provincia es obligatorio'),
+  canton: yup.string().required('El canton es obligatorio'),
+  district: yup.string().required('El distrito es obligatorio'),
+  address: yup.string().required('La direccion es obligatorio'),
 });
 
 {

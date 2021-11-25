@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { IconButton } from '@mui/material';
 import { AddShoppingCart } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 
 import CustomTable from 'components/customTable';
 import SearchBox from 'components/searchBox';
@@ -16,6 +16,8 @@ const CategoriesList = () => {
   const [value, setValue] = useState('');
 
   const searchMode = useLocation().pathname.split('/').at(-1) === 'search';
+
+  const history = useHistory();
 
   const debounce = useDebounce({ value });
 
@@ -38,7 +40,7 @@ const CategoriesList = () => {
           item.name,
           item.enabled ? 'Habilitado' : 'Desabilitado',
           <div className='table-icon'>
-            <IconButton color='success'>
+            <IconButton color='success' onClick={() => history.push(`/admin/products/categories?category=${item.id}`)}>
               <AddShoppingCart />
             </IconButton>
           </div>,

@@ -18,8 +18,9 @@ const NewClient = ({ callback, item }) => {
     ? {
         ...item,
         province: changeNullValues(item.province),
-        canton: changeNullValues(item.province),
-        district: changeNullValues(item.province),
+        canton: changeNullValues(item.canton),
+        district: changeNullValues(item.district),
+        address: changeNullValues(item.address),
       }
     : defaultState;
 
@@ -68,6 +69,7 @@ const defaultState = {
   province: '',
   canton: '',
   district: '',
+  address: '',
 };
 
 const schema = yup.object({
@@ -84,4 +86,5 @@ const schema = yup.object({
   province: yup.string().required('La provincia es obligatorio'),
   canton: yup.string().required('El canton es obligatorio'),
   district: yup.string().required('El distrito es obligatorio'),
+  address: yup.string().required('El direccion es obligatoria'),
 });

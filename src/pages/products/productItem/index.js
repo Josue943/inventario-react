@@ -1,14 +1,14 @@
 import { memo } from 'react';
-import { Delete, Edit, ViewList } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 
 import './styles.scss';
-import Image from 'assets/placeholder.jpg';
+import defaultImage from 'assets/placeholder.jpg';
 
-const Item = ({ id, name, onSelectItem, item, ...rest }) => (
+const Item = ({ id, name, onSelectItem, item, image, ...rest }) => (
   <div className='item'>
     <div className='item-img'>
-      <img src={Image} alt='' />
+      <img src={image || defaultImage} alt='' />
     </div>
 
     <div className='item-content'>
@@ -29,11 +29,6 @@ const Item = ({ id, name, onSelectItem, item, ...rest }) => (
       <div className='item-padding item-footer'>
         <p>Opciones:</p>
         <div className='item-options'>
-          <Tooltip title='Ver informacion' placement='top'>
-            <IconButton className='item-icon-container'>
-              <ViewList fontSize='inherit' className='item-icon' color='success' />
-            </IconButton>
-          </Tooltip>
           <Tooltip title='Actualizar producto' placement='top'>
             <IconButton className='item-icon-container' onClick={() => onSelectItem(item, 'edit')}>
               <Edit fontSize='inherit' className='item-icon' color='primary' />

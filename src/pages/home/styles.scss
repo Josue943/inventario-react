@@ -1,9 +1,20 @@
 .home-container {
-  margin: 30px 15px;
+  padding: 30px 25px;
+  width: 100%;
 }
 
 .home-header {
   max-width: 600px;
+  display: flex;
+  button {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
+}
+
+.searbox-box-borders {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 .categories-tabs {
@@ -23,5 +34,100 @@
     padding: 0 15px;
     color: #fff;
     text-transform: capitalize;
+    cursor: pointer;
+  }
+}
+
+.category-tab-selected {
+  background: #43bebd !important;
+}
+
+.products-home {
+  max-width: 1200px;
+  margin: 60px auto;
+  h6 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    text-transform: capitalize;
+  }
+}
+
+.products-home-container {
+  display: grid;
+  grid-template-columns: repeat(4, 240px);
+  justify-content: space-between;
+  grid-gap: 30px 0;
+}
+
+.products-pagination {
+  margin-top: 50px;
+}
+
+.product-card {
+  padding: 10px 15px;
+
+  &-image {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+    }
+  }
+
+  &-footer {
+    border-top: 1px solid #dedede;
+    text-align: center;
+
+    height: 65px;
+    p {
+      margin-top: 10px;
+      font-size: 1.4rem;
+      text-transform: capitalize;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 100%;
+      height: 1.2em;
+      white-space: nowrap;
+    }
+    span {
+      font-weight: bold;
+    }
+  }
+  &-cart {
+    overflow: hidden;
+    padding: 5px;
+
+    .button {
+      background: #43bebd;
+      width: 100%;
+      height: 35px;
+      border-radius: 5px;
+      border: none;
+      color: #fff;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.5 linear;
+      &:hover {
+        background: #8f6d9d;
+      }
+      svg {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        margin-bottom: 3px;
+      }
+      span {
+        font-size: 1.4rem;
+      }
+    }
   }
 }

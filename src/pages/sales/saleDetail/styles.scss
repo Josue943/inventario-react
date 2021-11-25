@@ -1,0 +1,19 @@
+.sale-detail-page {
+  h6 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+  &-form {
+    width: 600px;
+    margin-bottom: 30px;
+    &-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      p {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}

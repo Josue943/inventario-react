@@ -21,6 +21,9 @@
 .item-img {
   height: 150px;
   width: 150px;
+  img {
+    object-fit: cover;
+  }
 }
 
 .item-data {

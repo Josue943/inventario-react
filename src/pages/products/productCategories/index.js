@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router';
 
 import './styles.scss';
 
@@ -10,13 +11,15 @@ import { getProducts } from 'api/products';
 import { getCategories } from 'api/categories';
 
 const ProductsCategories = () => {
-  const [category, setCategory] = useState(null);
+  const { search } = useLocation();
+  const initialCategory = +new URLSearchParams(search).get('category');
+  const [category, setCategory] = useState(initialCategory || null);
   const { handlePage, pagination, resetPagination } = usePagination();
 
   const products = useFetch({
     apiFun: getProducts,
-    params: { ...pagination, category: category?.id },
-    initialFetch: false,
+    params: { ...pagination, category },
+    initialFetch: !!initialCategory,
   });
 
   //cambio de pagina
@@ -27,14 +30,19 @@ const ProductsCategories = () => {
     resetPagination();
   };
 
+  const getCategoryName = () => {
+    const cat = categories.data.rows.find(cat => cat.id === category);
+    return cat?.name || '';
+  };
+
   return (
     <>
       <h3>Productos por categorias</h3>
       <div className='product-categories-container'>
-        <CategoriesRow onChange={onSelectCategory} categories={categories.data.rows} selectedCategory={category?.id} />
+        <CategoriesRow onChange={onSelectCategory} categories={categories.data.rows} selectedCategory={category} />
         <div className='product-categories-container-content product-categories-box'>
           <h3 className='text-center'>
-            {category ? `Productos en categoria ${category.name}` : 'Selecciona una categoria'}
+            {category ? `Productos en categoria ${getCategoryName()}` : 'Selecciona una categoria'}
           </h3>
           <ProductsContainer
             products={products.data.rows}

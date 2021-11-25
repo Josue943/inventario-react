@@ -13,6 +13,7 @@ import {
   ShowChart,
   ViewList,
   Group,
+  AssignmentReturn,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -112,6 +113,15 @@ const sideBarItems = [
       { name: 'Nuevo usuario', Icon: AllInbox, to: '/admin/users/new' },
       { name: 'Lista de usuarios', Icon: ViewList, to: '/admin/users' },
       { name: 'Buscar usuario', Icon: Search, to: '/admin/users/search' },
+    ],
+  },
+  {
+    name: 'Devoluciones',
+    Icon: AssignmentReturn,
+    options: [
+      { name: 'Nuevo devolucion', Icon: AllInbox, to: '/admin/return/new' },
+      { name: 'Lista de devoluciones', Icon: ViewList, to: '/admin/return' },
+      { name: 'Buscar devolucion', Icon: Search, to: '/admin/return/search' },
     ],
   },
 ];

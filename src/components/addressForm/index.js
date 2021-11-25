@@ -12,6 +12,7 @@ const AddressForm = () => (
         return <CustomInput {...props} />;
       })}
     </div>
+    <CustomInput label='Direccion exacta' name='address' multiline />
   </>
 );
 
@@ -23,7 +24,7 @@ const options = [
     select: true,
     label: 'Provincia',
     options: [
-      { label: 'Seleccione una', value: '' },
+      { label: 'Seleccione una Provincia', value: '' },
       { label: 'Alajuela', value: 'alajuela' },
       { label: 'San Jose', value: 'san jose' },
       { label: 'Heredia', value: 'heredia' },

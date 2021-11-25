@@ -23,3 +23,23 @@
 .expiration-date {
   margin-top: 5px;
 }
+
+.drop-image-container {
+  display: flex;
+  align-items: center;
+}
+
+.drop-image {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: flex;
+
+  button {
+    text-transform: none !important;
+  }
+}
+
+.image-name {
+  font-size: 1.2rem;
+  margin-left: 10px;
+}

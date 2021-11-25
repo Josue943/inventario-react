@@ -27,10 +27,16 @@ const ProductsContainer = ({ refetch, currentPage, products = [], pages, handleP
 
   const onDelete = async () => {
     const response = await deleteProduct(item?.id);
-    const message = response.ok ? 'Producto Borrado' : 'Error de Servidor';
-    const severity = response.ok ? 'success' : 'error';
-    dispatch(setAlert({ alert: { message, severity } }));
-    if (response.ok) refetch();
+    if (response.ok) {
+      dispatch(setAlert({ alert: { message: 'Producto Borrado', severity: 'success' } }));
+      refetch();
+    }
+    if (response.status === 409)
+      dispatch(
+        setAlert({
+          alert: { message: 'No se puede eliminar el producto, cuenta con ventas registradas.', severity: 'error' },
+        })
+      );
   };
 
   const callback = () => {

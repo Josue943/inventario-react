@@ -4,11 +4,12 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 95%;
-  max-width: 1400px;
+  max-height: 85vh;
+  max-width: 1200px;
   background-color: #fff;
   box-shadow: 24px;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: auto;
   padding-top: 15px;
 
   h3 {

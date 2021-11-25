@@ -1,0 +1,36 @@
+.footer {
+  padding: 20px;
+  box-shadow: 0 -5px 5px -5px #333;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-gap: 20px;
+  justify-content: space-between;
+  background: #464646;
+  color: #fff;
+  h6 {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+  p {
+    font-size: 1.5rem;
+  }
+}
+
+.footer-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+}
+
+.footer-margin {
+  margin-bottom: 10px;
+}
+
+.svg-margin {
+  margin-right: 10px;
+}

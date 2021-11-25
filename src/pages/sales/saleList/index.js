@@ -1,7 +1,9 @@
 import Moment from 'react-moment';
 import moment from 'moment';
 import { useMemo } from 'react';
+import { AddShoppingCart } from '@mui/icons-material';
 import { Table, TableContainer, TableCell, TableBody, TableHead, TableRow, Paper } from '@mui/material';
+import { useHistory, useLocation } from 'react-router';
 import { useForm } from 'react-hook-form';
 
 import './styles.scss';
@@ -14,10 +16,14 @@ const SaleList = () => {
   const methods = useForm({ defaultValues });
   const { startDate, endDate } = methods.watch();
 
-  const sales = useFetch({
-    apiFun: getSales,
-    params: { startDate: moment(startDate).format('YYYY-MM-DD'), endDate: moment(endDate).format('YYYY-MM-DD') },
-  });
+  const history = useHistory();
+  const searchMode = useLocation().pathname.split('/').at(-1) === 'search';
+
+  const params = searchMode
+    ? { startDate: moment(startDate).format('YYYY-MM-DD'), endDate: moment(endDate).format('YYYY-MM-DD') }
+    : {};
+
+  const sales = useFetch({ apiFun: getSales, params });
 
   const data = useMemo(() => {
     return sales.data.rows.map(item => ({
@@ -25,8 +31,8 @@ const SaleList = () => {
       content: [
         item.id,
         <Moment format='DD-MM-YYYY h:mm:ss a'>{item.date}</Moment>,
-        `${item.client.name} ${item.client.surnames}`,
-        item.total,
+        `${item.client ? `${item.client.name} ${item.client.surnames}` : 'Publico general'}`,
+        `₡${item.total}`,
       ],
     }));
   }, [sales.data.rows]);
@@ -36,13 +42,15 @@ const SaleList = () => {
   return (
     <div className='sales-page'>
       <h3>Ventas Realizadas</h3>
-      <CustomForm methods={methods} onSubmit={onSubmit}>
-        <div className='sales-range'>
-          {dates.map(date => (
-            <CustomDatePicker key={date.name} {...date} />
-          ))}
-        </div>
-      </CustomForm>
+      {searchMode && (
+        <CustomForm methods={methods} onSubmit={onSubmit}>
+          <div className='sales-range'>
+            {dates.map(date => (
+              <CustomDatePicker key={date.name} {...date} />
+            ))}
+          </div>
+        </CustomForm>
+      )}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -56,9 +64,11 @@ const SaleList = () => {
             {data.map(({ item, content }) => (
               <TableRow key={item.id}>
                 {content.map(contentItem => (
-                  <TableCell key={contentItem}>{contentItem} </TableCell>
+                  <TableCell key={contentItem}>{contentItem}</TableCell>
                 ))}
-                <TableCell> </TableCell>
+                <TableCell>
+                  <AddShoppingCart onClick={() => history.push(`sales/details/${item.id}`)} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

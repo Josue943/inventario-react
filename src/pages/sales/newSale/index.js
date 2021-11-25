@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
-import { Paper, TableContainer, Table, TableCell, TableRow, TableHead, TableBody, Button } from '@mui/material';
-import { ControlPointRounded, DeleteForever } from '@mui/icons-material';
+import { Paper, Button } from '@mui/material';
+import { ControlPointRounded } from '@mui/icons-material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
 import './styles.scss';
+import SaleTable from '../saleTable';
 import SearchBox from 'components/searchBox';
 import useDebounce from 'hooks/useDebounce';
 import useFetch from 'hooks/useFetch';
@@ -50,10 +51,11 @@ const NewSale = () => {
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const watchDiscount = methods.watch('discount');
 
-  const total = selectedProducts.reduce((total, { quantity, price }) => total + quantity * price, 0);
-  const discount = watchDiscount === 0 ? 0 : total * (watchDiscount / 100);
+  const subtotal = selectedProducts.reduce((total, { quantity, price }) => total + quantity * price, 0);
+  const discount = watchDiscount === 0 ? 0 : subtotal * (watchDiscount / 100);
+  const total = subtotal - discount;
 
-  const onSubmit = async ({ client, paymentMethod }) => {
+  const onSubmit = async ({ client, paymentMethod, totalPaid, changeReturned }) => {
     if (!selectedProducts.length) return;
     const result = await createSale({
       products: selectedProducts.map(({ id, quantity, price }) => ({ productId: id, quantity, unitPrice: price })),
@@ -61,6 +63,8 @@ const NewSale = () => {
       discount,
       clientId: client,
       paymentMethod,
+      totalPaid,
+      changeReturned,
     });
 
     if (result.ok) dispatch(setAlert({ alert: { message: 'Venta creada', severity: 'success' } }));
@@ -93,51 +97,7 @@ const NewSale = () => {
       </div>
 
       <div className='new-sale-content'>
-        <TableContainer component={Paper} className='new-sale-table'>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell colSpan={2}>Producto</TableCell>
-                <TableCell align='center'>Precio</TableCell>
-                <TableCell align='center'>Cantidad</TableCell>
-                <TableCell align='center'>Subtotal</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedProducts.length > 0 && (
-                <>
-                  {selectedProducts.map(({ id, name, price, quantity }) => (
-                    <TableRow key={name}>
-                      <TableCell colSpan={2}>{name}</TableCell>
-                      <TableCell align='center'>₡{price}</TableCell>
-                      <TableCell align='center'>
-                        <div className='quantity-row'>
-                          <span onClick={() => updateProduct(id, quantity - 1)}>-</span> <strong>{quantity}</strong>{' '}
-                          <span onClick={() => updateProduct(id, quantity + 1)}>+</span>
-                        </div>
-                      </TableCell>
-                      <TableCell align='center'>₡{price * quantity}</TableCell>
-                      <TableCell align='center'>
-                        <DeleteForever
-                          color='error'
-                          className='pointer new-sale-icon'
-                          onClick={() => deleteProduct(id)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow>
-                    <TableCell colSpan={4} />
-                    <TableCell align='center'>Total</TableCell>
-                    <TableCell align='center'>₡{total}</TableCell>
-                  </TableRow>
-                </>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
+        <SaleTable products={selectedProducts} subtotal={subtotal} onUpdate={updateProduct} onDelete={deleteProduct} />
         <Paper className='new-sale-details'>
           <h5>Datos de la venta</h5>
           <CustomForm methods={methods} onSubmit={onSubmit}>
@@ -145,7 +105,7 @@ const NewSale = () => {
               label='Cliente'
               name='client'
               options={[
-                { label: 'Selecciona una opción', value: '' },
+                { label: 'Publico general', value: null },
                 ...clients.data.rows.map(({ name, id }) => ({ label: name, value: id })),
               ]}
             />
@@ -158,8 +118,8 @@ const NewSale = () => {
                 { label: 'Credito', value: 'credit' },
               ]}
             />
-            <CustomInput label='Descuento' name='discount' type='number' onlyNumbers />
-            <CustomInput label='Total pagado' name='totalPaid' type='number' onlyNumbers />
+            <CustomInput label='Descuento' name='discount' onlyNumbers />
+            <CustomInput label='Total pagado' name='totalPaid' onlyNumbers />
             <CustomInput label='Cambio devuelto' name='changeReturned' onlyNumbers />
             <div className='details-total'>
               <h6>Descuento</h6>
@@ -167,7 +127,7 @@ const NewSale = () => {
             </div>
             <div className='details-total'>
               <h6>Total</h6>
-              <h6>₡{total - discount}</h6>
+              <h6>₡{total}</h6>
             </div>
             <div className='new-sale-button-container'>
               <Button color='primary' variant='contained' type='submit' className='new-sale-button'>
@@ -185,12 +145,12 @@ export default NewSale;
 
 const defaultValues = {
   paymentMethod: 'cash',
-  client: '',
+  client: null,
   discount: 0,
   totalPaid: 0,
   changeReturned: 0,
 };
 
 const schema = yup.object({
-  client: yup.string().required('El cliente es obligatorio'),
+  totalPaid: yup.string().required('Total pagado es obligatoria'),
 });

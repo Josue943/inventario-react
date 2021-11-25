@@ -9,3 +9,9 @@ export const deleteProduct = id => api.delete(`${baseUrl}/${id}`);
 export const getProducts = params => api.get(baseUrl, params);
 
 export const updateProduct = ({ id, ...rest }) => api.patch(`${baseUrl}/${id}`, rest);
+
+export const uploadProductImage = (image, id) => {
+  const formdata = new FormData();
+  formdata.append('image', image.file, image.file.name);
+  return api.put(`${baseUrl}/${id}/image`, formdata);
+};

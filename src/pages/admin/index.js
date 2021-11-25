@@ -6,11 +6,14 @@ import Dashboard from './dashboard';
 import NewCategory from 'pages/categories/newCategory';
 import NewClient from 'pages/clients/newClient';
 import NewProduct from 'pages/products/newProduct';
+import NewReturn from 'pages/return/newReturn';
 import NewSale from 'pages/sales/newSale';
 import NewSupplier from 'pages/suppliers/newSupplier';
 import NewUser from 'pages/users/newUser';
 import ProductList from 'pages/products/productList';
 import ProductsCategories from 'pages/products/productCategories';
+import ReturnList from 'pages/return/returnList';
+import SaleDetail from 'pages/sales/saleDetail';
 import SaleList from 'pages/sales/saleList';
 import SearchProduct from 'pages/products/searchProduct';
 import SuppliersList from 'pages/suppliers/suppliersList';
@@ -77,8 +80,11 @@ const Admin = () => {
             path={`${path}/sales`}
             render={({ match: { url } }) => (
               <>
-                <Route path={`${url}`} component={SaleList} exact />
+                {[`${url}`, `${url}/search`].map(path => (
+                  <Route key={path} path={path} component={SaleList} exact />
+                ))}
                 <Route path={`${url}/new`} component={NewSale} />
+                <Route path={`${url}/details/:id`} component={SaleDetail} />
               </>
             )}
           />
@@ -90,6 +96,17 @@ const Admin = () => {
                   <Route key={path} path={path} component={UsersList} exact />
                 ))}
                 <Route path={`${url}/new`} component={NewUser} />
+              </>
+            )}
+          />
+          <Route
+            path={`${path}/return`}
+            render={({ match: { url } }) => (
+              <>
+                {[`${url}`, `${url}/search`].map(path => (
+                  <Route key={path} path={path} component={ReturnList} exact />
+                ))}
+                <Route path={`${url}/new`} component={NewReturn} />
               </>
             )}
           />
