@@ -1,13 +1,25 @@
 import Moment from 'react-moment';
 import moment from 'moment';
-import { useMemo } from 'react';
-import { AddShoppingCart } from '@mui/icons-material';
-import { Table, TableContainer, TableCell, TableBody, TableHead, TableRow, Paper } from '@mui/material';
+import { useMemo, useRef } from 'react';
+import { AddShoppingCart, Receipt } from '@mui/icons-material';
+import {
+  Table,
+  TableContainer,
+  TableCell,
+  TableBody,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
 import { useHistory, useLocation } from 'react-router';
+import { useReactToPrint } from 'react-to-print';
 import { useForm } from 'react-hook-form';
 
 import './styles.scss';
 import CustomSpinner from 'components/customSpiner';
+import SaleDetail from '../saleDetail';
 import useFetch from 'hooks/useFetch';
 import { getSales } from 'api/sales';
 import { CustomDatePicker, CustomForm } from 'components/form';
@@ -37,48 +49,64 @@ const SaleList = () => {
     }));
   }, [sales.data.rows]);
 
-  const onSubmit = data => {};
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({ content: () => componentRef.current });
 
   return (
-    <div className='sales-page'>
-      <h3>Ventas Realizadas</h3>
-      {searchMode && (
-        <CustomForm methods={methods} onSubmit={onSubmit}>
-          <div className='sales-range'>
-            {dates.map(date => (
-              <CustomDatePicker key={date.name} {...date} />
-            ))}
-          </div>
-        </CustomForm>
-      )}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {rows.map(row => (
-                <TableCell key={row}>{row}</TableCell>
+    <>
+      <div className='sales-page'>
+        <h3>Ventas Realizadas</h3>
+        {searchMode && (
+          <CustomForm methods={methods} onSubmit={() => {}}>
+            <div className='sales-range'>
+              {dates.map(date => (
+                <CustomDatePicker key={date.name} {...date} />
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map(({ item, content }) => (
-              <TableRow key={item.id}>
-                {content.map(contentItem => (
-                  <TableCell key={contentItem}>{contentItem}</TableCell>
-                ))}
-                <TableCell>
-                  <AddShoppingCart onClick={() => history.push(`sales/details/${item.id}`)} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {sales.loading && <CustomSpinner height={200} />}
-        {!sales.loading && sales.done && data.length === 0 && (
-          <h4 className='table-empty text-center'>Sin Registros</h4>
+            </div>
+          </CustomForm>
         )}
-      </TableContainer>
-    </div>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {rows.map(row => (
+                  <TableCell key={row}>{row}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map(({ item, content }) => (
+                <TableRow key={item.id}>
+                  {content.map(contentItem => (
+                    <TableCell key={contentItem}>{contentItem}</TableCell>
+                  ))}
+                  <TableCell>
+                    <Tooltip title='Detalles'>
+                      <IconButton color='primary'>
+                        <AddShoppingCart onClick={() => history.push(`sales/details/${item.id}`)} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Imprimir Factura'>
+                      <IconButton color='primary'>
+                        <Receipt onClick={handlePrint} />
+                      </IconButton>
+                    </Tooltip>
+
+                    <div style={{ display: 'none' }}>
+                      <SaleDetail ref={componentRef} data={item} invoice={true} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {sales.loading && <CustomSpinner height={200} />}
+          {!sales.loading && sales.done && data.length === 0 && (
+            <h4 className='table-empty text-center'>Sin Registros</h4>
+          )}
+        </TableContainer>
+      </div>
+    </>
   );
 };
 

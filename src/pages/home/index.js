@@ -75,7 +75,7 @@ const Home = () => {
             <h6 className='text-center'>{category?.name || 'Novedades'}</h6>
             <div className='products-home-container'>
               {products.rows.map(item => (
-                <ProductCard item={item} {...item} />
+                <ProductCard key={item.id} item={item} {...item} />
               ))}
             </div>
             <div className='products-pagination'>

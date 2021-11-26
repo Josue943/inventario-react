@@ -3,21 +3,32 @@ import { AccountCircle } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { setAlert } from 'store/alertSlice';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import './styles.scss';
-import { CustomForm, CustomInput } from 'components/form';
-import { Navbar } from 'components/home';
 import Layout from 'components/layout';
+import { CustomForm, CustomInput } from 'components/form';
+import { login } from 'api/user';
+import { setUser } from 'store/authSlice';
 
 const Login = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const methods = useForm({ defaultValues });
-  const onSubmit = data => {
-    dispatch(
-      setAlert({ alert: { message: 'Ha ingresado un nombre de usuario o contraseña inválidos', severity: 'error' } })
-    );
+  const onSubmit = async ({ username, password }) => {
+    const response = await login(username, password);
+    if (!response.ok) {
+      return dispatch(
+        setAlert({ alert: { message: 'Ha ingresado un nombre de usuario o contraseña inválidos', severity: 'error' } })
+      );
+    }
+    const { token, user } = response.data;
+    localStorage.setItem('token', token);
+    dispatch(setUser({ user }));
+    if (user.admin) return history.push('/admin');
+    history.push('/');
   };
 
   return (
@@ -48,11 +59,11 @@ const Login = () => {
 export default Login;
 
 const defaultValues = {
-  user: '',
+  username: '',
   password: '',
 };
 
 const options = [
-  { name: 'user', label: 'Usuario' },
+  { name: 'username', label: 'Usuario' },
   { name: 'password', label: 'Contraseña', type: 'password' },
 ];

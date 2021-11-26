@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
 import Moment from 'react-moment';
+import { forwardRef, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 
 import './styles.scss';
 import SaleTable from '../saleTable';
+import Logo from 'assets/logo.jpg';
 import { getSale } from 'api/sales';
 
-const SaleDetail = () => {
-  const [sale, setSale] = useState(null);
-
+const SaleDetail = forwardRef(({ data, invoice = false }, ref) => {
+  const [sale, setSale] = useState(data || null);
   const { id } = useParams();
 
   useEffect(() => {
     (async () => {
+      if (data) return;
       const response = await getSale(id);
       if (response.ok) setSale(response.data);
     })();
@@ -24,11 +25,10 @@ const SaleDetail = () => {
     (total, { saleDetails: { quantity, unitPrice } }) => total + quantity * unitPrice,
     0
   );
-
   return (
-    <div className='sale-detail-page'>
-      <h3>Detalles de la venta</h3>
-
+    <div className={`sale-detail-page ${invoice ? 'sale-invoice' : ''}`} ref={ref}>
+      <img src={Logo} alt='logo' className='invoice-logo' />
+      <h3>Detalles de la venta </h3>
       <h6>Datos</h6>
       <div className='sale-detail-page-form'>
         <div className='sale-detail-page-form-detail'>
@@ -66,6 +66,6 @@ const SaleDetail = () => {
       />
     </div>
   );
-};
+});
 
 export default SaleDetail;

@@ -5,7 +5,7 @@
   }
   &-form {
     width: 600px;
-    margin-bottom: 30px;
+    margin-bottom: 45px;
     &-detail {
       display: flex;
       align-items: center;
@@ -16,4 +16,20 @@
       }
     }
   }
+}
+
+.sale-invoice {
+  padding: 30px 40px;
+}
+
+.invoice-logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  position: absolute;
+  right: 30px;
+}
+
+.invoice-hide {
+  display: none;
 }
