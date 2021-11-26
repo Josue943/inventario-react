@@ -84,7 +84,7 @@ const Home = () => {
           </div>
         )}
       </div>
-      <FloatingWhatsApp phone='+50661551230' popupMessage='Hola!' autoOpenTimeout={15000000} />
+      <FloatingWhatsApp phone='+50672131613' popupMessage='Hola!' autoOpenTimeout={15000000} />
     </Layout>
   );
 };
