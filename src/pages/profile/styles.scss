@@ -45,3 +45,19 @@
     padding-bottom: 10px;
   }
 }
+
+.profile-shopping {
+  width: 100%;
+  &-table {
+    max-width: 600px;
+    margin: 50px auto;
+  }
+  h6 {
+    margin-bottom: 15px;
+  }
+  &-invoice {
+    .MuiSvgIcon-root {
+      margin-left: 10px;
+    }
+  }
+}

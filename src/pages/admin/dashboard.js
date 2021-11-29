@@ -39,5 +39,5 @@ const options = [
   { name: 'Clientes', Icon: Person, path: 'admin/clients' },
   { name: 'Ventas', Icon: LocalAtm, path: 'admin/sales' },
   { name: 'Usuarios', Icon: AccountCircle, path: 'admin/users' },
-  { name: 'Devoluciones', Icon: AssignmentReturn, path: 'admin/return' },
+  { name: 'Devoluciones', Icon: AssignmentReturn, path: 'admin/returns' },
 ];

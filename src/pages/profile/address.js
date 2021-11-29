@@ -7,7 +7,7 @@ import Layout from 'components/layout';
 import { CustomForm } from 'components/form';
 
 const Address = () => {
-  const methods = useForm({ defaultState });
+  const methods = useForm({ defaultValues });
   const onSubmit = () => {};
   return (
     <Layout>
@@ -27,7 +27,7 @@ const Address = () => {
 
 export default Address;
 
-const defaultState = {
+const defaultValues = {
   province: '',
   canton: '',
   district: '',

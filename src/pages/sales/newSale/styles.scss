@@ -85,6 +85,8 @@
 
 .quantity-row {
   cursor: pointer;
+
+  min-width: 120px;
   strong {
     padding: 0 5px;
   }

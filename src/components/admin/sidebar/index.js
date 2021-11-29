@@ -119,9 +119,8 @@ const sideBarItems = [
     name: 'Devoluciones',
     Icon: AssignmentReturn,
     options: [
-      { name: 'Nuevo devolucion', Icon: AllInbox, to: '/admin/return/new' },
-      { name: 'Lista de devoluciones', Icon: ViewList, to: '/admin/return' },
-      { name: 'Buscar devolucion', Icon: Search, to: '/admin/return/search' },
+      { name: 'Lista de devoluciones', Icon: ViewList, to: '/admin/returns' },
+      { name: 'Buscar devolucion', Icon: Search, to: '/admin/returns/search' },
     ],
   },
 ];

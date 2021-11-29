@@ -5,6 +5,7 @@ import { ControlPointRounded } from '@mui/icons-material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
 
 import './styles.scss';
 import SaleTable from '../saleTable';
@@ -25,6 +26,7 @@ const NewSale = () => {
   const debounceValue = useDebounce({ value, delay: 1000 });
   const initialRender = useRef();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const clients = useFetch({ apiFun: getPeople, params: { client: true } });
 
@@ -52,14 +54,13 @@ const NewSale = () => {
   const watchDiscount = methods.watch('discount');
 
   const subtotal = selectedProducts.reduce((total, { quantity, price }) => total + quantity * price, 0);
-  const discount = watchDiscount === 0 ? 0 : subtotal * (watchDiscount / 100);
-  const total = subtotal - discount;
+  const totalDiscount = watchDiscount === 0 ? 0 : subtotal * (watchDiscount / 100);
+  const total = subtotal - totalDiscount;
 
-  const onSubmit = async ({ client, paymentMethod, totalPaid, changeReturned }) => {
+  const onSubmit = async ({ client, paymentMethod, totalPaid, changeReturned, discount }) => {
     if (!selectedProducts.length) return;
     const result = await createSale({
       products: selectedProducts.map(({ id, quantity, price }) => ({ productId: id, quantity, unitPrice: price })),
-      total,
       discount,
       clientId: client,
       paymentMethod,
@@ -67,7 +68,10 @@ const NewSale = () => {
       changeReturned,
     });
 
-    if (result.ok) dispatch(setAlert({ alert: { message: 'Venta creada', severity: 'success' } }));
+    if (result.ok) {
+      dispatch(setAlert({ alert: { message: 'Venta creada', severity: 'success' } }));
+      history.push('/admin/sales');
+    }
   };
 
   const show = products.length > 0;
@@ -123,7 +127,7 @@ const NewSale = () => {
             <CustomInput label='Cambio devuelto' name='changeReturned' onlyNumbers />
             <div className='details-total'>
               <h6>Descuento</h6>
-              <h6>₡{discount}</h6>
+              <h6>₡{totalDiscount}</h6>
             </div>
             <div className='details-total'>
               <h6>Total</h6>

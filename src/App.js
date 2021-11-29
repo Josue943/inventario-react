@@ -10,6 +10,7 @@ import Page404 from 'pages/404';
 import Profile from 'pages/profile';
 import Register from 'pages/register';
 import Shop from 'pages/shop';
+import Shopping from 'pages/profile/shopping';
 import { autoLogin } from 'api/user';
 import { setUser } from 'store/authSlice';
 import { useDispatch } from 'react-redux';
@@ -54,8 +55,9 @@ const App = () => {
         <Route render={() => isLogged(Login)} path='/login' />
         <Route render={() => isLogged(Register)} path='/register' />
         <Route component={Shop} path='/shop' />
-        <Route component={() => publicUser(Profile, true)} exact path='/profile' />
-        <Route component={() => publicUser(Address, true)} path='/profile/address' />
+        <Route component={() => publicUser(Profile)} exact path='/profile' />
+        <Route component={() => publicUser(Address)} path='/profile/address' />
+        <Route component={() => publicUser(Shopping)} path='/profile/shopping' />
         <Route component={Page404} />
       </Switch>
     </BrowserRouter>
@@ -64,27 +66,19 @@ const App = () => {
 export default App;
 
 /*
-RF-63  Ver historial y detalles de compras realizadas  //
-RF-35 Realizar devoluciones // 
-36 Ver devoluciones //
-37 Buscar devoluciones //
-RF-65  Ver todos los productos y sus detalles //
-
-
 RF-16 formulario compra en linea //
-RF-62 Comprar en línea
 RF-30 notificaciones cuando se genera una compran
 RF-33 Ver ventas pendientes
+RF-62 Comprar en línea
 
-RF-42 Recibir notificaciones de stock crítico
-RF-53 notificaciones nuevo usuario se registra
-RF-54 notificaciones cada vez que un clientes
-
-
-*/
-
-/*
-funcionalidad registro  
+FUNCIONALIDADES
+RF-14 FORMULARIO REGISTRO
+RF-57-58 INFORMACION PERSONAL Y EDITAR
 RF-60 Editar direcciones de envío  
 RF-61 Eliminar direcciones de envío  
+RF-63  Ver historial y detalles de compras realizadas => falta linkear al usuario
+RF-65  Ver todos los productos y sus detalles //
+paginacion en algunas tablas
+token expir
+revisar que no se pueda eliminar clientes o provedores relacionados con usuarios
 */

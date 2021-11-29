@@ -24,7 +24,7 @@ const NewClient = ({ callback, item }) => {
       }
     : defaultState;
 
-  const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
+  const methods = useForm({ defaultValues, resolver: yupResolver(schema), mode: 'onTouched' });
 
   const onSubmit = async data => {
     const request = item ? updatePerson : createPerson;

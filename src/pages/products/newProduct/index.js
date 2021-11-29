@@ -48,7 +48,7 @@ const NewProduct = ({ item, callback }) => {
     });
 
     if (image && response.ok) {
-      await uploadProductImage(image, item.id || response.data.id);
+      await uploadProductImage(image, item?.id || response.data.id);
       setImage(null);
     }
 

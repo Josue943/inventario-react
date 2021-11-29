@@ -38,15 +38,23 @@ const SaleList = () => {
   const sales = useFetch({ apiFun: getSales, params });
 
   const data = useMemo(() => {
-    return sales.data.rows.map(item => ({
-      item,
-      content: [
-        item.id,
-        <Moment format='DD-MM-YYYY h:mm:ss a'>{item.date}</Moment>,
-        `${item.client ? `${item.client.name} ${item.client.surnames}` : 'Publico general'}`,
-        `₡${item.total}`,
-      ],
-    }));
+    return sales.data.rows.map(item => {
+      const subtotal = item.products.reduce(
+        (acc, { saleDetails: { quantity, unitPrice } }) => acc + quantity * unitPrice,
+        0
+      );
+      const discount = item.discount === 0 ? 0 : subtotal * (item.discount / 100);
+
+      return {
+        item,
+        content: [
+          item.id,
+          <Moment format='DD-MM-YYYY h:mm:ss a'>{item.date}</Moment>,
+          `${item.client ? `${item.client.name} ${item.client.surnames}` : 'Publico general'}`,
+          `₡${subtotal - discount}`,
+        ],
+      };
+    });
   }, [sales.data.rows]);
 
   const componentRef = useRef();
@@ -82,13 +90,13 @@ const SaleList = () => {
                   ))}
                   <TableCell>
                     <Tooltip title='Detalles'>
-                      <IconButton color='primary'>
-                        <AddShoppingCart onClick={() => history.push(`sales/details/${item.id}`)} />
+                      <IconButton color='primary' onClick={() => history.push(`sales/details/${item.id}`)}>
+                        <AddShoppingCart />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title='Imprimir Factura'>
-                      <IconButton color='primary'>
-                        <Receipt onClick={handlePrint} />
+                      <IconButton color='primary' onClick={handlePrint}>
+                        <Receipt />
                       </IconButton>
                     </Tooltip>
 

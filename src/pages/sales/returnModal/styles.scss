@@ -1,0 +1,15 @@
+.return-modal {
+  width: 400px !important;
+  padding: 15px 25px;
+  h6 {
+    margin-bottom: 15px;
+  }
+  form {
+    padding: 0;
+  }
+
+  &-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

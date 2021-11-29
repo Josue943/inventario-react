@@ -51,10 +51,17 @@ const CategoriesList = () => {
 
   const onDelete = async id => {
     const response = await deleteCategory(id);
-    const message = response.ok ? 'Categoria Borrada' : 'Error de Servidor';
-    const severity = response.ok ? 'success' : 'error';
-    dispatch(setAlert({ alert: { message, severity } }));
-    if (response.ok) refetch();
+
+    if (response.status === 409) {
+      dispatch(
+        setAlert({
+          alert: { message: 'No se puede eliminar, la categoria cuenta con productos ligados', severity: 'error' },
+        })
+      );
+    } else if (response.ok) {
+      dispatch(setAlert({ alert: { message: 'Categoria Borrada', severity: 'success' } }));
+      refetch();
+    }
   };
 
   const handleChange = ({ target: { value } }) => {

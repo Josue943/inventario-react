@@ -6,7 +6,6 @@ import Dashboard from './dashboard';
 import NewCategory from 'pages/categories/newCategory';
 import NewClient from 'pages/clients/newClient';
 import NewProduct from 'pages/products/newProduct';
-import NewReturn from 'pages/return/newReturn';
 import NewSale from 'pages/sales/newSale';
 import NewSupplier from 'pages/suppliers/newSupplier';
 import NewUser from 'pages/users/newUser';
@@ -100,13 +99,12 @@ const Admin = () => {
             )}
           />
           <Route
-            path={`${path}/return`}
+            path={`${path}/returns`}
             render={({ match: { url } }) => (
               <>
                 {[`${url}`, `${url}/search`].map(path => (
                   <Route key={path} path={path} component={ReturnList} exact />
                 ))}
-                <Route path={`${url}/new`} component={NewReturn} />
               </>
             )}
           />
