@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { ProductionQuantityLimits } from '@mui/icons-material';
 import { useHistory } from 'react-router';
+
 import CustomSpinner from 'components/customSpiner';
 
 const ReturnTable = ({ returns, redirect = false, loading, done }) => {
@@ -30,7 +31,7 @@ const ReturnTable = ({ returns, redirect = false, loading, done }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {returns.map(({ id, unitPrice, quantity, product, date }) => (
+          {returns.map(({ id, unitPrice, quantity, product, date, saleId }) => (
             <TableRow key={id}>
               <TableCell>{product.name}</TableCell>
               <TableCell>
@@ -42,7 +43,7 @@ const ReturnTable = ({ returns, redirect = false, loading, done }) => {
               {redirect && (
                 <TableCell align='center'>
                   <Tooltip title='Detalles'>
-                    <IconButton color='primary' onClick={() => history.push(`/admin/sales/details/${id}`)}>
+                    <IconButton color='primary' onClick={() => history.push(`/admin/sales/details/${saleId}`)}>
                       <ProductionQuantityLimits />
                     </IconButton>
                   </Tooltip>

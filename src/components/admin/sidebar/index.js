@@ -58,7 +58,7 @@ export default Sidebar;
 
 const sideBarItems = [
   {
-    name: 'Products',
+    name: 'Productos',
     Icon: ProductionQuantityLimits,
     options: [
       { name: 'Nuevo Producto', Icon: AllInbox, to: '/admin/products/new-product' },
@@ -102,7 +102,8 @@ const sideBarItems = [
     Icon: LocalAtm,
     options: [
       { name: 'Nueva venta', Icon: AllInbox, to: '/admin/sales/new' },
-      { name: 'Lista de ventas', Icon: ViewList, to: '/admin/sales' },
+      { name: 'Ventas realizadas', Icon: ViewList, to: '/admin/sales' },
+      { name: 'Ventas pendientes', Icon: ViewList, to: '/admin/sales/pending' },
       { name: 'Buscar ventas', Icon: Search, to: '/admin/sales/search' },
     ],
   },

@@ -15,3 +15,5 @@ export const uploadProductImage = (image, id) => {
   formdata.append('image', image.file, image.file.name);
   return api.put(`${baseUrl}/${id}/image`, formdata);
 };
+
+export const getSignature = () => api.get(`${baseUrl}/cloudinary/signature`);

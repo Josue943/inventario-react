@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import CustomPagination from 'components/customPagination';
 import CustomTable from 'components/customTable';
 import SearchBox from 'components/searchBox';
 import useDebounce from 'hooks/useDebounce';
@@ -18,7 +19,7 @@ const UserList = () => {
   const dispatch = useDispatch();
   const debounce = useDebounce({ value });
 
-  const { pagination, resetPagination } = usePagination();
+  const { pagination, resetPagination, handlePage } = usePagination();
   const { data, done, loading, refetch } = useFetch({
     apiFun: getUsers,
     params: { ...pagination, ...(searchMode && { search: debounce }) },
@@ -48,7 +49,7 @@ const UserList = () => {
     const severity = response.ok ? 'success' : 'error';
 
     dispatch(setAlert({ alert: { message, severity } }));
-    if (response.ok) refetch();
+    if (response.ok) pagination.page === 0 ? refetch() : resetPagination();
   };
 
   const handleChange = ({ target: { value } }) => {
@@ -69,15 +70,21 @@ const UserList = () => {
         </div>
       )}
       {searchMode && !done && !loading ? null : (
-        <CustomTable
-          rows={rows}
-          data={formattedData}
-          done={done}
-          loading={loading}
-          onDelete={onDelete}
-          onSuccessEdit={refetch}
-          mode='users'
-        />
+        <>
+          <CustomTable
+            rows={rows}
+            data={formattedData}
+            done={done}
+            loading={loading}
+            onDelete={onDelete}
+            onSuccessEdit={refetch}
+            mode='users'
+            handlePage={handlePage}
+            currentPage={pagination.page}
+          />
+          <div className='pagination-separator' />
+          <CustomPagination pages={data.pages} onChangePage={handlePage} currentPage={pagination.page + 1} />
+        </>
       )}
     </>
   );

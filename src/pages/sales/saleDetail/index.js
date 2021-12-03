@@ -17,6 +17,7 @@ const SaleDetail = forwardRef(({ data, invoice = false }, ref) => {
 
   useEffect(() => {
     (async () => {
+      if (invoice) return;
       const returnResponse = await getReturns(id);
       if (returnResponse.ok) setReturns(returnResponse.data);
 

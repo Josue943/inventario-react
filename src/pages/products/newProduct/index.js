@@ -8,7 +8,7 @@ import './styles.scss';
 import useFetch from 'hooks/useFetch';
 import { defaultValues, defaultSelectOption, options, optionsMain, radioOptions, schema } from './options';
 import { CustomForm, CustomInput, CustomSelect, CustomRadioButtons, CustomDatePicker } from 'components/form';
-import { createProduct, updateProduct, uploadProductImage } from 'api/products';
+import { createProduct, updateProduct, getSignature } from 'api/products';
 import { getCategories } from 'api/categories';
 import { getSuppliers } from 'api/suppliers';
 import { useDispatch } from 'react-redux';
@@ -42,13 +42,28 @@ const NewProduct = ({ item, callback }) => {
       ...data,
       brand: checkEmptyValues(data.brand),
       enabled: data.enabled === 1,
-      expiration: data.hasExpiration ? moment(data.expiration).format('DD/MM/yyyy') : null,
+      expiration: data.hasExpiration === '1' ? moment(data.expiration).format('DD/MM/yyyy') : null,
       supplierId: checkEmptyValues(data.supplierId),
       categoryId: checkEmptyValues(data.categoryId),
     });
 
     if (image && response.ok) {
-      await uploadProductImage(image, item?.id || response.data.id);
+      const {
+        data: { signature, timestamp },
+      } = await getSignature();
+
+      const formData = new FormData();
+      formData.append('file', image.file);
+      formData.append('signature', signature);
+      formData.append('timestamp', timestamp);
+      formData.append('api_key', '612943332798374');
+
+      const response = await fetch('https://api.cloudinary.com/v1_1/ddcyk5p6p/upload', {
+        method: 'post',
+        body: formData,
+      }).then(res => res.json());
+
+      await updateProduct({ id: item?.id || response.data.id, image: response.url });
       setImage(null);
     }
 
@@ -117,11 +132,13 @@ const NewProduct = ({ item, callback }) => {
         </div>
 
         <div className='form-buttons'>
-          <Button color='secondary' type='button' onClick={onClear}>
-            Limpiar
-          </Button>
+          {!item && (
+            <Button color='secondary' type='button' onClick={onClear}>
+              Limpiar
+            </Button>
+          )}
           <Button variant='contained' className='save-button' type='submit'>
-            Guardar
+            {item ? 'Actualizar' : 'Guardar'}
           </Button>
         </div>
       </CustomForm>
@@ -142,7 +159,7 @@ const getInitialState = item => ({
   presentation: changeNullValues(item.presentation),
   supplierId: changeNullValues(item.supplierId),
   warranty: changeNullValues(item.warranty),
-  hasExpiration: item.expiration ? 1 : 0,
+  hasExpiration: item.expiration ? '1' : '0',
   enabled: item.enabled ? 1 : 0,
   expiration: item.expiration ? moment(item.expiration, 'DD/MM/yyyy') : moment(),
 });

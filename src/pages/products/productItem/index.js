@@ -53,7 +53,7 @@ const details = [
   { label: 'Estado', value: 'enabled', getValue: value => (value ? 'Habilitado' : 'Desabilitado') },
   { label: 'Disponibles', value: 'stock' },
   { label: 'Vendidos', value: 'sold' },
-  { label: 'Vencimiento', value: 'expiration', getValue: value => (!value ? 'No tiene' : '10/10/2021') },
+  { label: 'Vencimiento', value: 'expiration', getValue: value => (!value ? 'No tiene' : value) },
 ];
 
 const differentValues = ['enabled', 'expiration', 'price'];

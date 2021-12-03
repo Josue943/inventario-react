@@ -3,6 +3,7 @@ import { create } from 'apisauce';
 import store from 'store';
 import { setAlert } from 'store/alertSlice';
 
+/* const api = create({ baseURL: 'https://acuario-api-v1.herokuapp.com/api/' }); */
 const api = create({ baseURL: 'http://localhost:4000/api/' });
 
 api.axiosInstance.interceptors.response.use(null, error => {

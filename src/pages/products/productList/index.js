@@ -10,7 +10,7 @@ import { getProducts } from 'api/products';
 const ProductList = () => {
   const { defaultState, title } = mode[useLocation().pathname.split('/').at(-1)];
 
-  const { handlePage, pagination } = usePagination();
+  const { handlePage, pagination, resetPagination } = usePagination();
   const { data, loading, refetch, done } = useFetch({
     apiFun: getProducts,
     params: { ...pagination, ...defaultState },
@@ -23,10 +23,11 @@ const ProductList = () => {
         products={data.rows}
         pages={data.pages}
         handlePage={handlePage}
-        loading={loading}
         currentPage={pagination.page}
+        loading={loading}
         refetch={refetch}
         done={done}
+        resetPagination={resetPagination}
       />
     </>
   );

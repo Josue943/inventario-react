@@ -35,6 +35,7 @@
     color: #fff;
     text-transform: capitalize;
     cursor: pointer;
+    margin-right: 5px;
   }
 }
 
@@ -75,7 +76,7 @@
     img {
       width: 80%;
       height: 80%;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 
@@ -83,7 +84,6 @@
     border-top: 1px solid #dedede;
     text-align: center;
 
-    height: 65px;
     p {
       margin-top: 10px;
       font-size: 1.4rem;
@@ -99,35 +99,92 @@
       font-weight: bold;
     }
   }
-  &-cart {
+  &-cart,
+  &-details {
     overflow: hidden;
     padding: 5px;
+  }
 
-    .button {
-      background: #43bebd;
-      width: 100%;
-      height: 35px;
-      border-radius: 5px;
-      border: none;
-      color: #fff;
-      text-align: center;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.5 linear;
+  &-details {
+    margin-bottom: 1px;
+    .product-card-button {
+      background: #1976d2;
       &:hover {
-        background: #8f6d9d;
-      }
-      svg {
-        width: 18px;
-        height: 18px;
-        margin-right: 5px;
-        margin-bottom: 3px;
-      }
-      span {
-        font-size: 1.4rem;
+        background: #4795e3;
       }
     }
   }
+}
+
+.product-card-modal {
+  height: 380px;
+  display: flex;
+  margin: 0 20px;
+  margin-bottom: 15px;
+  &-img {
+    width: 400px;
+    img {
+      object-fit: contain;
+      height: 100%;
+      width: 100%;
+    }
+  }
+  &-info {
+    width: 280px;
+
+    margin-left: 25px;
+    margin-right: 25px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    p {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    span {
+      font-weight: bold;
+    }
+    .product-card-button {
+      margin-top: 20px;
+    }
+  }
+}
+
+.product-card-home-modal {
+  width: auto !important;
+}
+
+.product-card-button {
+  background: #43bebd;
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5 linear;
+  &:hover {
+    background: #8f6d9d;
+  }
+  svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    margin-bottom: 3px;
+  }
+  span {
+    font-size: 1.4rem;
+  }
+}
+
+.home-products-empty {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

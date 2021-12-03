@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Button } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { FloatingWhatsApp } from 'react-floating-whatsapp-button';
 import 'react-floating-whatsapp-button/dist/index.css';
@@ -14,13 +15,12 @@ import useFetch from 'hooks/useFetch';
 import Layout from 'components/layout';
 import { getProducts } from 'api/products';
 import { getCategories } from 'api/categories';
-import { Button } from '@mui/material';
 
 const Home = () => {
   const [category, setCategory] = useState(null);
   const [search, setSearch] = useState('');
 
-  const { resetPagination, pagination, handlePage } = usePagination(2);
+  const { resetPagination, pagination, handlePage } = usePagination(4);
 
   const { data: products, loading, request } = useApi(getProducts);
 
@@ -35,8 +35,8 @@ const Home = () => {
     resetPagination();
   };
 
-  const onRequest = () => {
-    request({ category: category?.id, page: pagination.page, limit: pagination.limit, search, enabled: true });
+  const onRequest = page => {
+    request({ category: category?.id, page: page ?? pagination.page, limit: pagination.limit, search, enabled: true });
   };
 
   const onChange = e => setSearch(e.target.value);
@@ -46,14 +46,17 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, pagination.page]);
 
-  const onClick = () => onRequest();
+  const onSubmit = () => {
+    onRequest(0);
+    setSearch('');
+  };
 
   return (
     <Layout>
       <div className='home-container'>
         <div className='home-header'>
           <SearchBox className='searbox-box-borders' value={search} onChange={onChange} />
-          <Button variant='contained' onClick={onClick}>
+          <Button variant='contained' onClick={onSubmit}>
             <Search />
           </Button>
         </div>
@@ -67,10 +70,16 @@ const Home = () => {
               <p>{item.name}</p>
             </div>
           ))}
+          <div
+            className={`category-tab ${!category ? 'category-tab-selected' : ''}`}
+            onClick={() => handleChange(null)}
+          >
+            <p>Todas</p>
+          </div>
         </div>
         {loading ? (
           <CustomSpinner />
-        ) : (
+        ) : products.rows.length ? (
           <div className='products-home'>
             <h6 className='text-center'>{category?.name || 'Novedades'}</h6>
             <div className='products-home-container'>
@@ -81,6 +90,10 @@ const Home = () => {
             <div className='products-pagination'>
               <CustomPagination pages={products.pages} currentPage={pagination.page + 1} onChangePage={handlePage} />
             </div>
+          </div>
+        ) : (
+          <div className='home-products-empty'>
+            <h4>Sin Registros</h4>
           </div>
         )}
       </div>

@@ -23,9 +23,12 @@ const cartSlice = createSlice({
       else
         state.products = state.products.map(product => (product.id === productId ? { ...product, quantity } : product));
     },
+    clearCart: state => {
+      state.products = [];
+    },
   },
 });
 
-export const { addItem, updateItem } = cartSlice.actions;
+export const { addItem, clearCart, updateItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

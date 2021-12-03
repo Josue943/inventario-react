@@ -1,4 +1,3 @@
-import moment from 'moment';
 import * as yup from 'yup';
 
 export const optionsMain = [
@@ -24,7 +23,7 @@ export const options = [
     label: 'Garantia',
     select: true,
     options: [
-      { label: 'NA', value: '' },
+      { label: 'NA', value: 'NA' },
       { label: 'Días', value: 'days' },
       { label: 'semanas', value: 'weeks' },
       { label: 'mes', value: 'months' },
@@ -72,6 +71,7 @@ export const schema = yup.object({
   discount: yup
     .number()
     .min(0, 'El descuento no puede ser menor a 0')
+    .max(99, 'El descuento no puede ser menor a 99')
     .typeError('El descuento solo debe incluir numeros'),
   presentation: yup.string().required('La presentacion es obligatoria'),
 });
@@ -86,9 +86,9 @@ export const defaultValues = {
   brand: '',
   enabled: 1,
   presentation: '',
-  warranty: '',
+  warranty: 'NA',
   expiration: new Date(),
   supplierId: '',
   categoryId: '',
-  hasExpiration: 0,
+  hasExpiration: '0',
 };

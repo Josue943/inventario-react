@@ -1,8 +1,9 @@
 import * as yup from 'yup';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
 import compareObject from 'utils/compareObjects';
 import PeopleForm from 'components/peopleForm';
@@ -12,11 +13,12 @@ import { createUser, updateUser } from 'api/user';
 import { setAlert } from 'store/alertSlice';
 
 const NewUser = ({ callback, item }) => {
+  const [admin, setAdmin] = useState(item?.admin || false);
   const dispatch = useDispatch();
 
-  const defaultValues = item ? { username: item.username, ...item.details } : defaultState;
+  const defaultValues = item ? { username: item.username, password: '', ...item.details } : defaultState;
 
-  const methods = useForm({ defaultValues, mode: 'onTouched', resolver: yupResolver(schema) });
+  const methods = useForm({ defaultValues, mode: 'onTouched', resolver: yupResolver(getSchema(!!item)) });
 
   const onSubmit = async ({ username, password, ...rest }) => {
     const personBody = { ...rest, ...(item && { id: item.details.id }) };
@@ -25,8 +27,9 @@ const NewUser = ({ callback, item }) => {
 
     const response = await handleSupplierAction({
       username,
-      password,
       personId,
+      admin,
+      ...(password && { password }),
       ...(item && { id: item.id }),
     });
 
@@ -35,6 +38,7 @@ const NewUser = ({ callback, item }) => {
 
     dispatch(setAlert({ alert: { message, severity } }));
     response && callback ? callback() : onClear();
+    setAdmin(false);
   };
 
   const handlePersonAction = async body => {
@@ -53,6 +57,7 @@ const NewUser = ({ callback, item }) => {
   };
 
   const onClear = () => methods.reset(defaultValues);
+  const changeRole = () => setAdmin(!admin);
 
   return (
     <>
@@ -65,6 +70,12 @@ const NewUser = ({ callback, item }) => {
             <CustomInput key={o.name} {...o} />
           ))}
         </div>
+
+        <FormControlLabel
+          control={<Switch checked={admin} onChange={changeRole} name='admin' />}
+          label='Administrador'
+        />
+
         <div className='form-buttons'>
           <Button color='secondary' type='button' onClick={onClear}>
             Limpiar
@@ -91,24 +102,43 @@ const defaultState = {
   password: '',
 };
 
-const schema = yup.object({
-  documentId: yup
-    .string()
-    .trim()
-    .matches('^[0-9]*$', 'Numero de documento solo debe incluir numeros')
-    .required('El Numero de documento es obligatorio'),
-  documentType: yup.string().trim().required('Debe seleccionar un tipo de documento '),
-  name: yup.string().trim().required('El Nombre es obligatorio'),
-  surnames: yup.string().trim().required('Los Apellidos son obligatorio'),
-  phone: yup.string().trim().required('El Telefono es obligatorio'),
-  email: yup.string().trim().email('Email invalido').required('El Email es obligatorio'),
-  username: yup.string().trim().required('El usuario es obligatorio'),
-  password: yup
-    .string()
-    .trim()
-    .length(8, 'La password debe tener un minimo de 8 caracteres')
-    .required('La contraseña es obligatorio'),
-});
+const getSchema = edit => {
+  return yup.object({
+    documentId: yup
+      .string()
+      .trim()
+      .matches('^[0-9]*$', 'Numero de documento solo debe incluir numeros')
+      .required('El Numero de documento es obligatorio'),
+    documentType: yup.string().trim().required('Debe seleccionar un tipo de documento '),
+    name: yup.string().trim().required('El Nombre es obligatorio'),
+    surnames: yup.string().trim().required('Los Apellidos son obligatorio'),
+    phone: yup.string().trim().required('El Telefono es obligatorio'),
+    email: yup.string().trim().email('Email invalido').required('El Email es obligatorio'),
+    username: yup.string().trim().required('El usuario es obligatorio'),
+    password: getPasswordSchema(edit),
+  });
+};
+
+const getPasswordSchema = edit => {
+  return yup.string().test({
+    name: 'Custom validator',
+    test: function (value) {
+      if (value && value.length < 8) {
+        return this.createError({
+          message: 'La password debe tener un minimo de 8 caracteres',
+          path: 'password',
+        });
+      }
+      if (!value && !edit) {
+        return this.createError({
+          message: 'La password es obligatoria',
+          path: 'password',
+        });
+      }
+      return true;
+    },
+  });
+};
 
 const options = [
   { name: 'username', label: 'Usuario' },

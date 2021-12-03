@@ -9,6 +9,7 @@ import { deleteSupplier, getSuppliers } from 'api/suppliers';
 import { useLocation } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { setAlert } from 'store/alertSlice';
+import CustomPagination from 'components/customPagination';
 
 const SuppliersList = () => {
   const [value, setValue] = useState('');
@@ -18,7 +19,7 @@ const SuppliersList = () => {
   const dispatch = useDispatch();
   const debounce = useDebounce({ value });
 
-  const { pagination, resetPagination } = usePagination();
+  const { pagination, resetPagination, handlePage } = usePagination();
   const { data, done, loading, refetch } = useFetch({
     apiFun: getSuppliers,
     params: { ...pagination, ...(searchMode && { search: debounce }) },
@@ -45,11 +46,15 @@ const SuppliersList = () => {
 
   const onDelete = async id => {
     const response = await deleteSupplier(id);
-    const message = response.ok ? 'Proveedor Borrado' : 'Error de Servidor';
-    const severity = response.ok ? 'success' : 'error';
-
-    dispatch(setAlert({ alert: { message, severity } }));
-    if (response.ok) refetch();
+    if (response.ok) {
+      dispatch(setAlert({ alert: { message: 'Proveedor Borrado', severity: 'success' } }));
+      pagination.page === 0 ? refetch() : resetPagination();
+    } else if (response.status === 409)
+      dispatch(
+        setAlert({
+          alert: { message: 'No se puede eliminar, el Proveedor tiene productos ligados', severity: 'error' },
+        })
+      );
   };
 
   const handleChange = ({ target: { value } }) => {
@@ -66,15 +71,19 @@ const SuppliersList = () => {
         </div>
       )}
       {searchMode && !done && !loading ? null : (
-        <CustomTable
-          rows={rows}
-          data={formattedData}
-          done={done}
-          loading={loading}
-          onDelete={onDelete}
-          onSuccessEdit={refetch}
-          mode='suppliers'
-        />
+        <>
+          <CustomTable
+            rows={rows}
+            data={formattedData}
+            done={done}
+            loading={loading}
+            onDelete={onDelete}
+            onSuccessEdit={refetch}
+            mode='suppliers'
+          />
+          <div className='pagination-separator' />
+          <CustomPagination pages={data.pages} onChangePage={handlePage} currentPage={pagination.page + 1} />
+        </>
       )}
     </>
   );

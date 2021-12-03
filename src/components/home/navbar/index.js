@@ -5,8 +5,8 @@ import { useHistory } from 'react-router';
 import './styles.scss';
 
 const Navbar = () => {
-  const { items, user } = useSelector(({ cart, auth }) => ({
-    item: cart.products.reduce((previous, current) => previous + current.quantity, 0),
+  const { count, user } = useSelector(({ cart, auth }) => ({
+    count: cart.products.reduce((previous, current) => previous + current.quantity, 0),
     user: auth.user,
   }));
 
@@ -14,7 +14,7 @@ const Navbar = () => {
   return (
     <div className='navbar main-padding'>
       <div className='navbar-home-container'>
-        <p>Llámenos: 2218-1420</p>
+        <p>Llámenos: 7213-1613</p>
         <div className='navbar-home-rigth'>
           <div className='navbar-item pointer' onClick={() => history.push(user ? '/profile' : '/login')}>
             <Person />
@@ -22,7 +22,7 @@ const Navbar = () => {
           </div>
           <div className='navbar-item pointer ' onClick={() => history.push('/shop')}>
             <ShoppingCart />
-            <p>Carrito {items > 0 && `(${items})`}</p>
+            <p>Carrito {count > 0 && `(${count})`}</p>
           </div>
         </div>
       </div>

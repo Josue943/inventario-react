@@ -79,7 +79,7 @@ const Admin = () => {
             path={`${path}/sales`}
             render={({ match: { url } }) => (
               <>
-                {[`${url}`, `${url}/search`].map(path => (
+                {[`${url}`, `${url}/search`, `${url}/pending`].map(path => (
                   <Route key={path} path={path} component={SaleList} exact />
                 ))}
                 <Route path={`${url}/new`} component={NewSale} />

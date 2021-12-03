@@ -4,6 +4,7 @@ import { AddShoppingCart } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 
+import CustomPagination from 'components/customPagination';
 import CustomTable from 'components/customTable';
 import SearchBox from 'components/searchBox';
 import useDebounce from 'hooks/useDebounce';
@@ -21,7 +22,7 @@ const CategoriesList = () => {
 
   const debounce = useDebounce({ value });
 
-  const { pagination, resetPagination } = usePagination(10);
+  const { pagination, resetPagination, handlePage } = usePagination();
 
   const { data, done, loading, refetch } = useFetch({
     apiFun: getCategories,
@@ -60,7 +61,7 @@ const CategoriesList = () => {
       );
     } else if (response.ok) {
       dispatch(setAlert({ alert: { message: 'Categoria Borrada', severity: 'success' } }));
-      refetch();
+      pagination.page === 0 ? refetch() : resetPagination();
     }
   };
 
@@ -78,15 +79,19 @@ const CategoriesList = () => {
         </div>
       )}
       {searchMode && !done && !loading ? null : (
-        <CustomTable
-          rows={rows}
-          data={formattedData}
-          onDelete={onDelete}
-          onSuccessEdit={refetch}
-          mode='categories'
-          loading={loading}
-          done={done}
-        />
+        <>
+          <CustomTable
+            rows={rows}
+            data={formattedData}
+            onDelete={onDelete}
+            onSuccessEdit={refetch}
+            mode='categories'
+            loading={loading}
+            done={done}
+          />
+          <div className='pagination-separator' />
+          <CustomPagination pages={data.pages} onChangePage={handlePage} currentPage={pagination.page + 1} />
+        </>
       )}
     </div>
   );

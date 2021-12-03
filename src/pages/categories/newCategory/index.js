@@ -41,7 +41,7 @@ const NewCategory = ({ item, callback }) => {
             Limpiar
           </Button>
           <Button variant='contained' className='save-button' type='submit'>
-            Guardar
+            {item ? 'Actualizar' : 'Guardar'}
           </Button>
         </div>
       </CustomForm>

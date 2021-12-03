@@ -10,10 +10,8 @@ const useFetch = ({ apiFun, params = {}, initialFetch = true }) => {
   const request = async () => {
     !state.data.count && setState({ ...state, loading: true });
     const response = await apiFun(params);
-    setTimeout(() => {
-      if (response.ok) setState({ data: response.data, loading: false, done: true, error: false });
-      else console.log(response);
-    }, 1000);
+    if (response.ok) setState({ data: response.data, loading: false, done: true, error: false });
+    else console.log(response);
   };
 
   useEffect(() => {

@@ -121,14 +121,3 @@ const schema = yup.object({
   district: yup.string().required('El distrito es obligatorio'),
   address: yup.string().required('La direccion es obligatorio'),
 });
-
-{
-  /* <CustomForm methods={methods} onSubmit={onSubmit}>
-        <div className='search-people'>
-          <CustomInput name='search' label='Numero de documento' />
-          <Button variant='contained' type='submit'>
-            Buscar
-          </Button>
-        </div>
-      </CustomForm> */
-}
